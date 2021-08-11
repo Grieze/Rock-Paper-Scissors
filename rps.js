@@ -11,45 +11,59 @@ function computerPlay() {
   }
 }
 
-function playRound(playerSelection, computerSelection) {
-  if (playerSelection.toUpperCase() == "ROCK" && computerSelection == "Scissors") {
-    console.log('You Win! ' + playerSelection + ' beats ' + computerSelection);
-    return 1;
+function playRound(playerSelection, computerSelection, scores) {
+  const results = document.querySelector('.results');
+  if (playerSelection == "Rock" && computerSelection == "Scissors") {
+    results.textContent = 'You Win! ' + playerSelection + ' beats ' + computerSelection;
+    scores[0] = scores[0] + 1;
   }
-  else if (playerSelection.toUpperCase() == "PAPER" && computerSelection == "Rock") {
-    console.log('You Win! ' + playerSelection + ' beats ' + computerSelection);
-    return 1;
+  else if (playerSelection == "Paper" && computerSelection == "Rock") {
+    results.textContent = 'You Win! ' + playerSelection + ' beats ' + computerSelection;
+    scores[0] = scores[0] + 1;
   }
-  else if (playerSelection.toUpperCase() == "SCISSORS" && computerSelection == "Paper") {
-    console.log('You Win! ' + playerSelection + ' beats ' + computerSelection);
-    return 1;
+  else if (playerSelection == "Scissors" && computerSelection == "Paper") {
+    results.textContent = 'You Win! ' + playerSelection + ' beats ' + computerSelection;
+    scores[0] = scores[0] + 1;
   }
-  else if (playerSelection.toUpperCase() == computerSelection.toUpperCase()) {
-    console.log('It\'s a tie!');
-    return -1;
-  }
-  else {
-    console.log('You lose! ' + computerSelection + ' beats ' + playerSelection);
-    return 0;
-  }
-}
-
-function game() {
-  let score = 0;
-  for (let i = 0; i < 5; i++) {
-    let move = ""
-    let playerChoice = window.prompt("Please make a move", move);
-    let result = playRound(playerChoice, computerPlay())
-    if (result == 1) {
-      score++;
-    }
-  }
-  if (score >= 3) {
-    console.log("Player is the winner!");
+  else if (playerSelection == computerSelection) {
+    results.textContent = 'It\'s a tie!';
   }
   else {
-    console.log("Computer is the winner!");
+    results.textContent = 'You lose! ' + computerSelection + ' beats ' + playerSelection;
+    scores[1] = scores[1] + 1;
   }
+  const outputScores = document.querySelector(".current-score")
+  outputScores.textContent = "Player Score: " + scores[0] + " Computer Score: " + scores[1];
+  if (scores[0] == 5) {
+    // output that player won
+    outputScores.textContent = "Congratulations you've won!";
+    // reset the score to play a new game
+    scores[0] = 0;
+    scores[1] = 0;
+  }
+  else if (scores[1] == 5) {
+    // ouput that computer won
+    outputScores.textContent = "Unfortunately you've lost.";
+    // reset the score to play a new game
+    scores[0] = 0;
+    scores[1] = 0;
+  }
+  return scores;
 }
 
-game();
+// DRIVER CODE GOES HERE
+
+// Let playerChoice be a global variable
+const buttons = document.querySelectorAll('button');
+
+let scores = [0, 0]
+
+// we use the .forEach method to iterate through each button
+buttons.forEach((button) => {
+  // and for each one we add a 'click' listener
+  button.addEventListener('click', () => {
+    let playerSelection = button.innerHTML;
+    //game(playerSelection, scores)
+    playRound(playerSelection, computerPlay(), scores)
+  });
+});
